@@ -4,9 +4,9 @@ let userName;
 
 // Função para perguntar o nome usando SweetAlert
 Swal.fire({
-  title: 'Digite seu nome',
+  title: 'Identificação',
   input: 'text',
-  inputPlaceholder: 'Seu nome',
+  inputPlaceholder: 'Digite o nome de usuário para se identificar no chat',
   allowOutsideClick: false,
   allowEscapeKey: false,
   inputValidator: (value) => {
@@ -16,12 +16,12 @@ Swal.fire({
   }
 }).then((result) => {
   userName = result.value || "Usuário Anônimo"; // Nome padrão se o usuário não fornecer um nome
-  document.getElementById('message-input').focus(); // Foca no campo de mensagem
+  document.getElementById('messageInput').focus(); // Foca no campo de mensagem
 });
 
 // Recebe as mensagens do servidor e exibe no chat
 socket.on('chat message', (msg) => {
-  const chatBox = document.getElementById('chat-box');
+  const chatBox = document.getElementById('chatBox');
   const message = document.createElement('p');
   message.textContent = msg;
   chatBox.appendChild(message);
@@ -30,7 +30,7 @@ socket.on('chat message', (msg) => {
 
 // Função para enviar a mensagem
 function sendMessage() {
-  const input = document.getElementById('message-input');
+  const input = document.getElementById('messageInput');
   if (input.value) {
     // Envia o nome e a mensagem ao servidor
     socket.emit('chat message', `${userName}: ${input.value}`);
@@ -39,9 +39,11 @@ function sendMessage() {
 }
 
 // Captura o evento de tecla "Enter" no campo de entrada
-document.getElementById('message-input').addEventListener('keydown', (event) => {
+messageInput.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
-    event.preventDefault(); // Impede o comportamento padrão do Enter
-    sendMessage(); // Chama a função para enviar a mensagem
+    if (messageInput.value.trim().length > 0) {
+      event.preventDefault(); // Previne a quebra de linha
+      sendMessage(); // Chama a função para enviar a mensagem
+    }
   }
 });
