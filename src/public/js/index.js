@@ -17,6 +17,24 @@ Swal.fire({
 }).then((result) => {
   userName = result.value || "Usuário Anônimo"; // Nome padrão se o usuário não fornecer um nome
   document.getElementById('messageInput').focus(); // Foca no campo de mensagem
+
+  // Emite um evento 'authenticate' para o servidor após o usuário ser autenticado
+  socket.emit('authenticate', userName);
+
+  // Recebe notificação de novo usuário conectado do servidor com o evento 'userConnected'
+  socket.on('userConnected', (user) => {
+    // Verifica se o usuário conectado é diferente do usuário atual para evitar notificações duplicadas
+    if (userName !== user) {
+      // Exibe um popup de informação (toast) informando que um novo usuário se conectou
+      Swal.fire({
+        title: 'Novo Usuário Conectado',
+        text: `${user} acabou de se conectar.`,
+        icon: 'info',
+        toast: true,
+        position: 'top-right'
+      });
+    }
+  });
 });
 
 // Recebe as mensagens do servidor e exibe no chat

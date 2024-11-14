@@ -27,6 +27,14 @@ app.use('/', viewsRouter);
 io.on('connection', (socket) => {
   console.log('Usuário conectado');
 
+  // Evento de autenticação de usuário
+  socket.on('authenticate', (user) => {
+    console.log('Usuário autenticado', user);
+
+    // Emitir evento para notificar novo usuário conectado para todos os clientes
+    socket.broadcast.emit("userConnected", user);
+  });
+
   // Recebe e retransmite a mensagem para todos os clientes conectados
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg); // Retransmite a mensagem com o nome
