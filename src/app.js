@@ -1,9 +1,10 @@
 const express = require('express');
-const _dirname = require('./utils');
+// const _dirname = require('./utils');
 const handlebars = require('express-handlebars');
 const viewsRouter = require('./routes/view.router');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -15,10 +16,12 @@ const io = new Server(server);
 // Configura o Handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
-app.set('views', _dirname + '/views');
+// app.set('views', _dirname + '/views');
+app.set('views', path.join(__dirname, 'views'));
 
 // Servir arquivos estáticos
-app.use(express.static(_dirname + '/public'));
+// app.use(express.static(_dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rota principal renderizando uma página usando Handlebars
 app.use('/', viewsRouter);
